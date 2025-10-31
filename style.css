@@ -1,0 +1,51 @@
+/* body style */
+body {
+    background-image: url("images/bg.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    height: 100vh;
+    margin: 0;
+}
+
+/* p style */
+p {
+    font-family: "Poppins", "Comic Neue", "Segoe UI", sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* animation fade up - start*/
+@keyframes fade-up {
+    0% {
+        opacity: 0;
+        transform: translateY(40px);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-up {
+    animation: fade-up 0.8s ease-out forwards;
+}
+
+/* animation fade up - exit */
+@keyframes fade-up-exit {
+    0% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-40px);
+    }
+}
+
+.animate-fade-up-exit {
+    animation: fade-up-exit 0.8s ease-in forwards;
+}
