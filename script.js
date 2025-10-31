@@ -1,4 +1,4 @@
-document.getElementById("submit").addEventListener("click", function () {
+document.getElementById("submit").addEventListener("click", async function () {
     const name = document.getElementById("name").value.trim();
     const container1 = document.getElementById("container");
     const container2 = document.getElementById("container2");
@@ -6,19 +6,17 @@ document.getElementById("submit").addEventListener("click", function () {
     const container4 = document.getElementById("container4");
     const welcome = document.getElementById("welcome");
     const errorMsg = document.getElementById("errorMsg");
-    const resultContainer = document.getElementById("resultContainer");
 
     if (name === "") {
         errorMsg.classList.remove("hidden");
         return;
     }
-
     errorMsg.classList.add("hidden");
 
     container1.classList.remove("animate-fade-up");
     container1.classList.add("animate-fade-up-exit");
 
-    setTimeout(() => {
+    setTimeout(async () => {
         container1.classList.add("hidden");
         welcome.textContent = `Welcome, ${name} !`;
         container2.classList.remove("hidden");
@@ -27,40 +25,73 @@ document.getElementById("submit").addEventListener("click", function () {
         kittyContainer.innerHTML = "";
 
         const maxMove = 50;
-        const totalCats = 5;
+        const totalCats = 10;
         let currentCatIndex = 0;
         const catMap = new Map();
+        let cuteCats = [];
+        const usedCats = new Set();
 
-        loadNewCat();
+        async function fetchCuteCats() {
+            try {
+                const response = await fetch("https://cataas.com/api/cats?tags?");
+                const data = await response.json();
+                cuteCats = data;
+            } catch (err) {
+                console.error("Failed to fetch cats:", err);
+            }
+        }
 
-        function loadNewCat() {
+        function getContainerSize() {
+            return window.innerWidth >= 1024 ? 300 : 250;
+        }
+
+        async function loadNewCat() {
             kittyContainer.innerHTML = "";
+
+            const containerSize = getContainerSize();
 
             const loadingText = document.createElement("p");
             loadingText.textContent = "Loading ...";
-            loadingText.className = "rounded-2xl opacity-70 animate-pulse text-gray-500 font-semibold text-xl flex items-center justify-center";
-            loadingText.style.width = "300px";
-            loadingText.style.height = "300px";
+            loadingText.className =
+                "rounded-2xl opacity-70 animate-pulse text-gray-500 font-semibold flex lg:text-lg items-center justify-center";
+            loadingText.style.width = containerSize + "px";
+            loadingText.style.height = containerSize + "px";
             loadingText.style.display = "flex";
             loadingText.style.alignItems = "center";
             loadingText.style.justifyContent = "center";
             kittyContainer.appendChild(loadingText);
 
-            const catRandom = Math.floor(Math.random() * 1000000);
+            if (!cuteCats.length) await fetchCuteCats();
+
+            // Pick a random unused cat
+            let cat;
+            let attempts = 0;
+            do {
+                const randomIndex = Math.floor(Math.random() * cuteCats.length);
+                cat = cuteCats[randomIndex];
+                attempts++;
+            } while (usedCats.has(cat.id) && attempts < 20);
+
+            usedCats.add(cat.id); // Mark this cat as used
+
             const img = document.createElement("img");
-            img.src = `https://cataas.com/cat?width=300&height=300&random=${catRandom}`;
+            img.src = `https://cataas.com/cat/${cat.id}?width=${containerSize}&height=${containerSize}`;
             img.alt = "Kitty Image";
             img.className =
                 "rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-300 cursor-pointer select-none";
+            img.style.width = containerSize + "px";
+            img.style.height = containerSize + "px";
             img.style.position = "relative";
             img.style.transition = "left 0.3s ease, opacity 0.3s ease";
             img.style.opacity = "0";
+            img.style.display = "block";
+            img.style.margin = "0 auto";
 
             img.onload = () => {
                 kittyContainer.innerHTML = "";
                 kittyContainer.appendChild(img);
-                setTimeout(() => img.style.opacity = "1", 50);
-                setupKittyInteractions(img, catRandom);
+                setTimeout(() => (img.style.opacity = "1"), 50);
+                setupKittyInteractions(img, cat.id);
             };
 
             img.onerror = () => {
@@ -68,7 +99,36 @@ document.getElementById("submit").addEventListener("click", function () {
             };
         }
 
-        function setupKittyInteractions(img, catRandom) {
+        window.addEventListener("resize", () => {
+            const img = kittyContainer.querySelector("img");
+            const loadingText = kittyContainer.querySelector("p");
+
+            if (img) {
+                const containerSize = getContainerSize();
+                img.style.width = containerSize + "px";
+                img.style.height = containerSize + "px";
+            }
+
+            if (loadingText) {
+                const containerSize = getContainerSize();
+                loadingText.style.width = containerSize + "px";
+                loadingText.style.height = containerSize + "px";
+            }
+
+            // Update result images
+            const imgs = container4.querySelectorAll("img");
+            imgs.forEach((img) => {
+                const size = getResultImageSize();
+                img.style.width = size + "px";
+                img.style.height = size + "px";
+                const url = new URL(img.src);
+                url.searchParams.set("width", size);
+                url.searchParams.set("height", size);
+                img.src = url.toString();
+            });
+        });
+
+        function setupKittyInteractions(img, catId) {
             let following = false;
             let moveKitty = null;
 
@@ -87,11 +147,11 @@ document.getElementById("submit").addEventListener("click", function () {
 
                 if (offset >= maxMove) {
                     container3.style.boxShadow = "0 0 50px rgba(146, 255, 173, 1)";
-                    catMap.set(catRandom, true);
+                    catMap.set(catId, true);
                     fadeAndNextCat();
                 } else if (offset <= -maxMove) {
                     container3.style.boxShadow = "0 0 50px rgba(254, 127, 127, 0.8)";
-                    catMap.set(catRandom, false);
+                    catMap.set(catId, false);
                     fadeAndNextCat();
                 } else {
                     container3.style.boxShadow = "0 0 25px rgba(255,255,255,0.8)";
@@ -145,6 +205,10 @@ document.getElementById("submit").addEventListener("click", function () {
             }
         }
 
+        function getResultImageSize() {
+            return window.innerWidth >= 1024 ? 150 : 125;
+        }
+
         function showResults() {
             container3.classList.add("hidden");
             container4.classList.remove("hidden");
@@ -155,17 +219,19 @@ document.getElementById("submit").addEventListener("click", function () {
             likedContainer.innerHTML = "";
             unlikedContainer.innerHTML = "";
 
-            catMap.forEach((liked, randomNum) => {
+            catMap.forEach((liked, catId) => {
                 const card = document.createElement("div");
                 card.className = "flex flex-col items-center bg-white rounded-xl p-3";
-
                 card.style.boxShadow = liked
                     ? "0 0 30px rgba(146, 255, 173, 1)"
                     : "0 0 30px rgba(254, 127, 127, 0.8)";
 
                 const img = document.createElement("img");
-                img.src = `https://cataas.com/cat?width=150&height=150&random=${randomNum}`;
+                const size = getResultImageSize();
+                img.src = `https://cataas.com/cat/${catId}?width=${size}&height=${size}`;
                 img.alt = "Kitty Image";
+                img.style.width = size + "px";
+                img.style.height = size + "px";
                 img.className = "rounded-xl mb-2";
 
                 const label = document.createElement("p");
@@ -175,14 +241,12 @@ document.getElementById("submit").addEventListener("click", function () {
                 card.appendChild(img);
                 card.appendChild(label);
 
-                if (liked) {
-                    likedContainer.appendChild(card);
-                } else {
-                    unlikedContainer.appendChild(card);
-                }
+                if (liked) likedContainer.appendChild(card);
+                else unlikedContainer.appendChild(card);
             });
-
         }
+
+        await loadNewCat();
 
     }, 800);
 

@@ -29,9 +29,9 @@
         <!-- Name Input Container -->
         <div id="container"
             class="bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[80%] md:w-[60%] lg:w-[40%] text-center animate-fade-up my-5">
-            <p class="text-lg text-black">Hi guess, what is your name ?</p>
+            <p class="lg:text-lg text-black">Hi guess, what is your name ?</p>
 
-            <div class="flex flex-col text-left mt-5">
+            <div class="flex flex-col text-left mt-5 lg:text-lg ">
                 <input id="name" type="text" placeholder="Enter your name"
                     class="border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 focus:shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-500 w-full" />
             </div>
@@ -39,7 +39,7 @@
             <span id="errorMsg" class="hidden flex justify-start text-red-500 text-sm mt-5">* Please insert your name
                 first.</span>
 
-            <div class="flex justify-end mt-5">
+            <div class="flex justify-end mt-5 lg:text-lg ">
                 <button id="submit"
                     class="inline-flex items-center justify-center bg-gray-400 text-white font-semibold px-4 py-2 rounded-lg transform transition-all duration-200 ease-out hover:scale-110 hover:bg-blue-300 active:bg-blue-500">
                     Submit
@@ -50,17 +50,18 @@
         <!-- Welcome Container -->
         <div id="container2"
             class="hidden bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[80%] md:w-[60%] lg:w-[40%] text-center opacity-0 animate-fade-up">
-            <p id="welcome" class="text-lg w-full text-black"></p>
+            <p id="welcome" class="lg:text-lg w-full text-black"></p>
         </div>
 
         <!-- Kitty Survey Container -->
         <div id="container3"
             class="hidden bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[90%] md:w-[80%] lg:w-[60%] text-center opacity-0 animate-fade-up mt-10">
-            <p class="text-xl font-semibold">Kitty Survey</p>
+            <p class="lg:text-lg font-semibold">Kitty Survey</p>
 
             <div class="text-left">
-                <p class="w-full text-black mt-5">Choose your favourite Kitty !</p>
-                <p class="w-full text-gray-500">* Select and swipe right if you like it, or left if you don't.</p>
+                <p class="w-full text-black mt-5 lg:text-lg">Choose your favourite Kitty !</p>
+                <p class="w-full text-gray-500 lg:text-lg">* Select and swipe right if you like it, or left if you
+                    don't.</p>
             </div>
             <div id="kittyContainer" class="flex flex-wrap justify-center mt-5 p-5"></div>
         </div>
@@ -69,13 +70,13 @@
 
         <div id="container4"
             class="hidden bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[90%] md:w-[80%] lg:w-[70%] text-center opacity-0 animate-fade-up mt-10">
-            <p class="text-xl font-semibold mb-5">Kitty Survey Result - Liked</p>
+            <p class="lg:text-xl font-semibold mb-5">Kitty Survey Result - Liked</p>
 
-            <div id="resultLikedContainer" class="flex flex-wrap justify-center gap-10 p-3 mb-5"></div>
+            <div id="resultLikedContainer" class="flex flex-wrap justify-center gap-10 p-3 mb-5 lg:text-xl"></div>
 
-            <p class="text-xl font-semibold mb-5">Kitty Survey Result - Unliked</p>
+            <p class="lg:text-xl font-semibold mb-5">Kitty Survey Result - Unliked</p>
 
-            <div id="resultUnlikedContainer" class="flex flex-wrap justify-center gap-10 p-3"></div>
+            <div id="resultUnlikedContainer" class="flex flex-wrap justify-center gap-10 p-3 lg:text-xl"></div>
 
         </div>
         =
