@@ -5,58 +5,86 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <!-- Title -->
-    <title>Kitty</title>
+    <title>Kitty Survey</title>
 
-    <!-- Links -->
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Comic+Neue:wght@400;700&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="style.css">
 
-    <!-- Script -->
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
-<body class="flex flex-col justify-center items-center min-h-screen">
-    <div id="container"
-        class="bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[80%] md:w-[60%] lg:w-[40%] text-center animate-fade-up">
-        <p class="text-lg text-black">Hi guess, what is your name ?</p>
+<body class="flex flex-col justify-between min-h-screen bg-gray-100">
 
-        <div class="flex flex-col text-left mt-5">
-            <input id="name" type="text" placeholder="Enter your name"
-                class="border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 focus:shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-500" />
+    <!-- Navigation Bar -->
+    <nav class="">
+        <!-- Empty for now -->
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex flex-col justify-center items-center flex-1 w-full max-w-6xl mx-auto py-10 px-5">
+
+        <!-- Name Input Container -->
+        <div id="container"
+            class="bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[80%] md:w-[60%] lg:w-[40%] text-center animate-fade-up my-5">
+            <p class="text-lg text-black">Hi guess, what is your name ?</p>
+
+            <div class="flex flex-col text-left mt-5">
+                <input id="name" type="text" placeholder="Enter your name"
+                    class="border border-gray-300 rounded-xl px-4 py-2 focus:outline-none focus:border-blue-500 focus:shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-all duration-500 w-full" />
+            </div>
+
+            <span id="errorMsg" class="hidden flex justify-start text-red-500 text-sm mt-5">* Please insert your name
+                first.</span>
+
+            <div class="flex justify-end mt-5">
+                <button id="submit"
+                    class="inline-flex items-center justify-center bg-gray-400 text-white font-semibold px-4 py-2 rounded-lg transform transition-all duration-200 ease-out hover:scale-110 hover:bg-blue-300 active:bg-blue-500">
+                    Submit
+                </button>
+            </div>
         </div>
 
-        <span id="errorMsg" class="hidden flex justify-start text-red-500 text-sm mt-5">* Please insert your name
-            first.</span>
-
-        <div class="flex justify-end mt-5">
-            <button id="submit"
-                class="inline-flex items-center justify-center bg-gray-400 text-white font-semibold px-4 py-2 rounded-lg transform transition-all duration-200 ease-out hover:scale-110 hover:bg-blue-300 active:bg-blue-500">
-                Submit
-            </button>
+        <!-- Welcome Container -->
+        <div id="container2"
+            class="hidden bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[80%] md:w-[60%] lg:w-[40%] text-center opacity-0 animate-fade-up">
+            <p id="welcome" class="text-lg w-full text-black"></p>
         </div>
-    </div>
 
-    <div id="container2"
-        class="hidden bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[80%] md:w-[60%] lg:w-[40%] text-center opacity-0 animate-fade-up">
-        <p id="welcome" class="text-lg text-black"></p>
-    </div>
+        <!-- Kitty Survey Container -->
+        <div id="container3"
+            class="hidden bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[90%] md:w-[80%] lg:w-[60%] text-center opacity-0 animate-fade-up mt-10">
+            <p class="text-xl font-semibold">Kitty Survey</p>
 
-    <div id="container3"
-        class="hidden bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[90%] md:w-[80%] lg:w-[50%] text-center opacity-0 animate-fade-up mt-10">
-        <p class="text-xl font-semibold">Kitty Survey</p>
+            <div class="text-left">
+                <p class="w-full text-black mt-5">Choose your favourite Kitty !</p>
+                <p class="w-full text-gray-500">* Select and swipe right if you like it, or left if you don't.</p>
+            </div>
+            <div id="kittyContainer" class="flex flex-wrap justify-center mt-5 p-5"></div>
+        </div>
 
-        <div class="text-left">
-            <p class="w-full text-black mt-5">Choose your favourite Kitty !</p>
-            <p class="w-full text-gray-500">* Swipe right if you like it, or left if you don’t.</p>
+        <!-- Result Container -->
+
+        <div id="container4"
+            class="hidden bg-white rounded-2xl shadow-[0_0_25px_rgba(255,255,255,0.8)] py-5 px-10 w-[90%] md:w-[80%] lg:w-[70%] text-center opacity-0 animate-fade-up mt-10">
+            <p class="text-xl font-semibold mb-5">Kitty Survey Result - Liked</p>
+
+            <div id="resultLikedContainer" class="flex flex-wrap justify-center gap-10 p-3 mb-5"></div>
+
+            <p class="text-xl font-semibold mb-5">Kitty Survey Result - Unliked</p>
+
+            <div id="resultUnlikedContainer" class="flex flex-wrap justify-center gap-10 p-3"></div>
 
         </div>
-        <div id="kittyContainer" class="flex flex-wrap justify-center gap-5 p-5"></div>
+        =
+    </main>
 
-    </div>
+    <!-- Footer -->
+    <footer class="">
+        <!-- Empty for now -->
+    </footer>
 
     <script src="script.js"></script>
 </body>
