@@ -28,40 +28,11 @@ document.getElementById("submit").addEventListener("click", function () {
         img.src = `https://cataas.com/cat?width=300&height=300&random=${Math.random()}`;
         img.alt = "Kitty Image";
         img.className =
-            "rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-300 cursor-grab";
+            "rounded-2xl shadow-[0_0_15px_rgba(0,0,0,0.3)] hover:scale-105 transition-transform duration-300 cursor-pointer";
         kittyContainer.appendChild(img);
 
-        let startX = 0;
-        let isDragging = false;
-
-        img.addEventListener("mousedown", (e) => {
-            isDragging = true;
-            startX = e.clientX;
-            img.style.transition = "none";
+        img.addEventListener("click", () => {
             img.classList.add("shadow-[0_0_30px_rgba(59,130,246,0.8)]");
-        });
-
-        document.addEventListener("mouseup", () => {
-            if (!isDragging) return;
-            isDragging = false;
-            img.style.transition = "transform 0.5s ease, opacity 0.5s ease";
-            img.style.transform = "translateX(0)";
-            img.style.opacity = "1";
-            img.classList.remove("shadow-[0_0_30px_rgba(59,130,246,0.8)]");
-        });
-
-        document.addEventListener("mousemove", (e) => {
-            if (!isDragging) return;
-            const moveX = e.clientX - startX;
-
-            // Limit movement range
-            const maxMove = 50; // can only move 100px left/right
-            const clampedMoveX = Math.max(-maxMove, Math.min(moveX, maxMove));
-            img.style.transform = `translateX(${clampedMoveX}px)`;
-
-            // Change opacity (from 1.0 to 0.5)
-            const opacity = 1 - (Math.abs(clampedMoveX) / maxMove) * 0.5;
-            img.style.opacity = opacity.toString();
         });
     }, 800);
 
