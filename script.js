@@ -53,7 +53,7 @@ document.getElementById("submit").addEventListener("click", async function () {
             const loadingText = document.createElement("p");
             loadingText.textContent = "Loading ...";
             loadingText.className =
-                "rounded-2xl opacity-70 animate-pulse text-gray-500 font-semibold flex lg:text-lg items-center justify-center";
+                "rounded-2xl opacity-100 animate-pulse text-gray-500 font-semibold flex lg:text-lg items-center justify-center";
             loadingText.style.width = containerSize + "px";
             loadingText.style.height = containerSize + "px";
             loadingText.style.display = "flex";
@@ -61,18 +61,17 @@ document.getElementById("submit").addEventListener("click", async function () {
             loadingText.style.justifyContent = "center";
             kittyContainer.appendChild(loadingText);
 
-            if (!cuteCats.length) await fetchCuteCats();
-
-            // Pick a random unused cat
             let cat;
-            let attempts = 0;
-            do {
-                const randomIndex = Math.floor(Math.random() * cuteCats.length);
-                cat = cuteCats[randomIndex];
-                attempts++;
-            } while (usedCats.has(cat.id) && attempts < 20);
+            try {
+                const response = await fetch("https://cataas.com/cat?json=true");
+                cat = await response.json();
+            } catch (err) {
+                console.error("Failed to fetch cat:", err);
+                kittyContainer.innerHTML = `<p class="text-gray-600 text-center">Failed to load kitty !</p>`;
+                return;
+            }
 
-            usedCats.add(cat.id); // Mark this cat as used
+            usedCats.add(cat.id);
 
             const img = document.createElement("img");
             img.src = `https://cataas.com/cat/${cat.id}?width=${containerSize}&height=${containerSize}`;
@@ -95,9 +94,10 @@ document.getElementById("submit").addEventListener("click", async function () {
             };
 
             img.onerror = () => {
-                kittyContainer.innerHTML = `<p class="text-gray-600 text-center">Failed to load kitty 😿</p>`;
+                kittyContainer.innerHTML = `<p class="text-gray-600 text-center">Failed to load kitty !</p>`;
             };
         }
+
 
         window.addEventListener("resize", () => {
             const img = kittyContainer.querySelector("img");
@@ -115,7 +115,6 @@ document.getElementById("submit").addEventListener("click", async function () {
                 loadingText.style.height = containerSize + "px";
             }
 
-            // Update result images
             const imgs = container4.querySelectorAll("img");
             imgs.forEach((img) => {
                 const size = getResultImageSize();
@@ -146,11 +145,11 @@ document.getElementById("submit").addEventListener("click", async function () {
                 img.style.left = `${offset}px`;
 
                 if (offset >= maxMove) {
-                    container3.style.boxShadow = "0 0 50px rgba(146, 255, 173, 1)";
+                    container3.style.boxShadow = "0 0 50px rgba(0, 254, 64, 1)";
                     catMap.set(catId, true);
                     fadeAndNextCat();
                 } else if (offset <= -maxMove) {
-                    container3.style.boxShadow = "0 0 50px rgba(254, 127, 127, 0.8)";
+                    container3.style.boxShadow = "0 0 50px rgba(255, 0, 0, 0.8)";
                     catMap.set(catId, false);
                     fadeAndNextCat();
                 } else {
@@ -206,12 +205,17 @@ document.getElementById("submit").addEventListener("click", async function () {
         }
 
         function getResultImageSize() {
-            return window.innerWidth >= 1024 ? 150 : 125;
+            return window.innerWidth >= 1024 ? 150 : 100;
         }
 
         function showResults() {
-            container3.classList.add("hidden");
-            container4.classList.remove("hidden");
+            container3.classList.remove("animate-fade-up");
+            container3.classList.add("animate-fade-up-exit");
+
+            setTimeout(() => {
+                container3.classList.add("hidden");
+                container4.classList.remove("hidden");
+            }, 2000);
 
             const likedContainer = document.getElementById("resultLikedContainer");
             const unlikedContainer = document.getElementById("resultUnlikedContainer");
@@ -219,12 +223,28 @@ document.getElementById("submit").addEventListener("click", async function () {
             likedContainer.innerHTML = "";
             unlikedContainer.innerHTML = "";
 
+            let hasLiked = false;
+            let hasUnliked = false;
+
             catMap.forEach((liked, catId) => {
                 const card = document.createElement("div");
-                card.className = "flex flex-col items-center bg-white rounded-xl p-3";
+                card.className = "flex flex-col items-center bg-white rounded-xl p-3 cursor-pointer";
                 card.style.boxShadow = liked
-                    ? "0 0 30px rgba(146, 255, 173, 1)"
-                    : "0 0 30px rgba(254, 127, 127, 0.8)";
+                    ? "0 0 20px rgba(146, 255, 173, 1)"
+                    : "0 0 20px rgba(254, 127, 127, 0.8)";
+                card.style.transition = "box-shadow 0.3s ease";
+
+                card.addEventListener("mouseenter", () => {
+                    card.style.boxShadow = liked
+                        ? "0 0 60px rgba(146, 255, 173, 1)"
+                        : "0 0 60px rgba(254, 127, 127, 0.8)";
+                });
+
+                card.addEventListener("mouseleave", () => {
+                    card.style.boxShadow = liked
+                        ? "0 0 20px rgba(146, 255, 173, 1)"
+                        : "0 0 20px rgba(254, 127, 127, 0.8)";
+                });
 
                 const img = document.createElement("img");
                 const size = getResultImageSize();
@@ -232,18 +252,34 @@ document.getElementById("submit").addEventListener("click", async function () {
                 img.alt = "Kitty Image";
                 img.style.width = size + "px";
                 img.style.height = size + "px";
-                img.className = "rounded-xl mb-2";
+                img.className = "rounded-xl mb-2 text-md";
+
+                card.addEventListener("click", () => {
+                    window.open(`https://cataas.com/cat/${catId}?width=${size}&height=${size}`);
+                });
 
                 const label = document.createElement("p");
-                label.className = liked ? "text-green-500 font-semibold" : "text-red-500 font-semibold";
+                label.className = liked ? "text-green-500" : "text-red-500";
                 label.textContent = liked ? "Liked" : "Unliked";
 
                 card.appendChild(img);
                 card.appendChild(label);
 
-                if (liked) likedContainer.appendChild(card);
-                else unlikedContainer.appendChild(card);
+                if (liked) {
+                    likedContainer.appendChild(card);
+                    hasLiked = true;
+                } else {
+                    unlikedContainer.appendChild(card);
+                    hasUnliked = true;
+                }
             });
+
+            if (!hasLiked) {
+                likedContainer.innerHTML = `<p class="text-green-500 text-lg font-semibold">You loved all the kitties!</p>`;
+            }
+            if (!hasUnliked) {
+                unlikedContainer.innerHTML = `<p class="text-red-500 text-lg font-semibold">You disliked kitties!</p>`;
+            }
         }
 
         await loadNewCat();
@@ -253,4 +289,11 @@ document.getElementById("submit").addEventListener("click", async function () {
     setTimeout(() => {
         container3.classList.remove("hidden");
     }, 2000);
+
+});
+
+document.getElementById("tryagain").addEventListener("click", async function () {
+
+    location.reload();
+
 });
