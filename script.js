@@ -223,9 +223,15 @@ document.getElementById("submit").addEventListener("click", async function () {
                 // Set the opcity according to distance / maxMove
                 const opacity = 1 - (distance / maxMove) * (1 - minOpacity);
 
-                //Set the opacity and left for the img
+                // Apply opacity 
                 img.style.opacity = opacity;
-                img.style.left = `${offset}px`;
+
+                // Add rotation effect with  maximum 10 rotation
+                const maxRotation = 10;
+                const rotation = (offset / maxMove) * maxRotation;
+
+                // Apply the transform with offset and rotation
+                img.style.transform = `translateX(${offset}px) rotate(${rotation}deg)`;
 
                 //Change the shadow for container 3 according to offset and maxMove which is right is green "Liked" and left is red "Disliked"
                 // Set the catMap with id and true or false
@@ -287,7 +293,8 @@ document.getElementById("submit").addEventListener("click", async function () {
                 document.removeEventListener("touchmove", onTouchMove);
 
                 // Let the image set as default
-                img.style.left = "0px";
+                img.style.transition = "all 0.5s ease";
+                img.style.transform = "translateX(0px) rotate(0deg)";
                 img.style.opacity = "1";
                 img.classList.remove("shadow-[0_0_30px_rgba(59,130,246,0.8)]");
                 container3.style.boxShadow = "0 0 25px rgba(255,255,255,0.8)";
